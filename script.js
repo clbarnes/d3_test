@@ -7,11 +7,11 @@ var data_max = 500;
 
 var padding = 30;
 
-var transition_dur = 150;
+var transition_dur = 500;
 var transition_delay = function (d, i) {
-    return i*(transition_dur/2)
+    return i*(transition_dur/50)
 };
-var ease_type = "cubic-in-out";
+var ease_type = "elastic";
 
 var mk_data = function(l) {
     var out = [];
@@ -81,88 +81,21 @@ svg.append("g")
     .attr("transform", "translate(" + padding + ", 0)")
     .call(yAxis);
 
-// var hScale = d3.scale.linear()
-//     .domain([0, Math.round(d3.max(dataset) * 1.2)])
-//     .rangeRound([0, h]);
-//
-// svg.selectAll("rect")
-//     .data(dataset)
-//     .enter()
-//     .append("rect")
-//     .attr("x", function(d, i) {
-//         return xScale(i)
-//     })
-//     .attr("width", xScale.rangeBand())
-//     .attr("y", function(d) {
-//         return yScale(d)
-//     })
-//     .attr("height", function(d) {
-//         return hScale(d)
-//     })
-//     .attr("fill", function (d){
-//         return "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")";
-//     });
-//
-// svg.selectAll("text")
-//     .data(dataset)
-//     .enter()
-//     .append("text")
-//     .text(function (d) {
-//         return Math.round(d);
-//     })
-//     .attr("x", function(d, i) {
-//         return xScale(i) + 7
-//     })
-//     .attr("y", function(d) {
-//         return yScale(d) + 15
-//     })
-//     .attr("font-family", "sans-serif")
-//     .attr("font-size", "11px")
-//     .attr("fill", "white");
-//
-// d3.select("p")
-//     .on("click", function() {
-//         dataset = mk_data(DATA_LEN);
-//
-//         yScale.domain([0, Math.round(d3.max(dataset) * 1.2)]);
-//         hScale.domain([0, Math.round(d3.max(dataset) * 1.2)])
-//
-//         svg.selectAll("rect")
-//             .data(dataset)
-//             .transition()
-//                 .delay(transition_delay)
-//                 .duration(transition_dur)
-//                 .ease(ease_type)
-//             .each("start", function() {
-//                 d3.select(this)
-//                     .attr("fill", "magenta")
-//         })
-//             .attr("y", function(d) {
-//                 return yScale(d);
-//             })
-//             .attr("height", function(d) {
-//                 return hScale(d);
-//             })
-//             .transition()
-//             .duration(transition_dur)
-//             .attr("fill", function(d) {
-//                 return "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")";
-//             });
-//
-//         svg.selectAll("text")
-//             .data(dataset)
-//             .transition()
-//                 .delay(transition_delay)
-//                 .duration(transition_dur)
-//                 .ease(ease_type)
-//             .text(function (d) {
-//                 return Math.round(d);
-//             })
-//             .attr("x", function(d, i) {
-//                 return xScale(i) + 7
-//             })
-//             .attr("y", function(d) {
-//                 return yScale(d) + 15
-//             });
-//     });
+d3.select("p")
+    .on("click", function() {
+        dataset = mk_data(DATA_LEN);
+
+        svg.selectAll("circle")
+            .data(dataset)
+            .transition()
+                .delay(transition_delay)
+                .duration(transition_dur)
+                .ease(ease_type)
+            .attr("cy", function(d) {
+                return yScale(d.y);
+            })
+            .attr("cx", function(d) {
+                return xScale(d.x);
+            });
+    });
 

@@ -1,3 +1,5 @@
+var DATA_LEN = 20;
+
 var mk_data = function(l) {
     var out = [];
     for (var i = 0; i < l; i++) {
@@ -6,7 +8,7 @@ var mk_data = function(l) {
     return out;
 };
 
-var dataset = mk_data(20);
+var dataset = mk_data(DATA_LEN);
 
 var svg = d3.select("body").append("svg").attr("width", 500).attr("height", 500);
 
@@ -59,3 +61,30 @@ svg.selectAll("text")
     .attr("font-family", "sans-serif")
     .attr("font-size", "11px")
     .attr("fill", "white");
+
+d3.select("p")
+    .on("click", function() {
+        dataset = mk_data(DATA_LEN)
+
+        svg.selectAll("rect")
+            .data(dataset)
+            .attr("y", function(d) {
+                return h - yScale(d);
+            })
+            .attr("height", function(d) {
+                return yScale(d);
+            });
+
+        svg.selectAll("text")
+            .data(dataset)
+            .text(function (d) {
+                return Math.round(d);
+            })
+            .attr("x", function(d, i) {
+                return xScale(i) + 7
+            })
+            .attr("y", function(d) {
+                return yScale(d) + 15
+            });
+    });
+

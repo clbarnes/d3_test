@@ -19,7 +19,10 @@ class JavascriptWarning(Warning):
 
 driver = webdriver.PhantomJS(service_log_path=os.path.join(DIR, 'phantom.log'))
 driver.set_window_size(1024, 768)
-driver.get('http://localhost:8080/')
+driver.get(os.path.join(os.path.dirname(DIR), 'index.html'))
+
+driver.save_screenshot(os.path.join(DIR, 'snapshot.png'))
+
 
 if len(argv) > 1 and argv[1] == "test":
     log = driver.get_log("har")

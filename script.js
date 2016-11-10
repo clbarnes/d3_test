@@ -93,13 +93,11 @@ d3.select("p")
             .attr("height", function(d) {
                 return hScale(d);
             })
-            .each("end", function() {
-                d3.select(this)
-                    .attr("fill", function(d) {
-                        return "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")";
-                    });
+            .transition()
+            .duration(transition_dur)
+            .attr("fill", function(d) {
+                return "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")";
             });
-
 
         svg.selectAll("text")
             .data(dataset)

@@ -1,5 +1,15 @@
 var DATA_LEN = 20;
 
+var w = 600;
+var h = 250;
+
+var transition_dur = 150;
+var transition_delay = function (d, i) {
+    return i*(transition_dur/2)
+};
+var ease_type = "cubic-in-out";
+
+
 var mk_data = function(l) {
     var out = [];
     for (var i = 0; i < l; i++) {
@@ -12,8 +22,6 @@ var dataset = mk_data(DATA_LEN);
 
 var svg = d3.select("body").append("svg").attr("width", 500).attr("height", 500);
 
-var w = 600;
-var h = 250;
 
 var yScale = d3.scale.linear()
     .domain([0, Math.round(d3.max(dataset) * 1.2)])
@@ -64,19 +72,41 @@ svg.selectAll("text")
 
 d3.select("p")
     .on("click", function() {
-        dataset = mk_data(DATA_LEN)
+        dataset = mk_data(DATA_LEN);
+
+        yScale.domain([0, Math.round(d3.max(dataset) * 1.2)]);
+        hScale.domain([0, Math.round(d3.max(dataset) * 1.2)])
 
         svg.selectAll("rect")
             .data(dataset)
+            .transition()
+                .delay(transition_delay)
+                .duration(transition_dur)
+                .ease(ease_type)
+            .each("start", function() {
+                d3.select(this)
+                    .attr("fill", "magenta")
+        })
             .attr("y", function(d) {
-                return h - yScale(d);
+                return yScale(d);
             })
             .attr("height", function(d) {
-                return yScale(d);
+                return hScale(d);
+            })
+            .each("end", function() {
+                d3.select(this)
+                    .attr("fill", function(d) {
+                        return "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")";
+                    });
             });
+
 
         svg.selectAll("text")
             .data(dataset)
+            .transition()
+                .delay(transition_delay)
+                .duration(transition_dur)
+                .ease(ease_type)
             .text(function (d) {
                 return Math.round(d);
             })

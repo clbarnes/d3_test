@@ -115,7 +115,7 @@ d3.select("#regenerate-text")
             });
     });
 
-d3.select("#newdata-text")
+d3.select("#adddata-text")
     .on("click", function() {
         dataset.push(Math.random()*DATA_MAX);
         xScale.domain(d3.range(dataset.length));
@@ -161,8 +161,43 @@ d3.select("#newdata-text")
             .duration(500)
             .attr("x", function(d, i) {
                 return xScale(i) + 7
+            });
+    });
+
+d3.select("#removedata-text")
+    .on("click", function() {
+        dataset.shift();
+        xScale.domain(d3.range(dataset.length));
+
+        var bars = svg.selectAll("rect").data(dataset);
+
+        bars.exit()
+            .transition()
+            .duration(500)
+            .attr("x", function() {
+                return w;
             })
-            .attr("y", function(d) {
-                return yScale(d) + 15
+            .remove();
+
+        bars.transition()
+            .duration(500)
+            .attr("x", function(d, i) {
+                return xScale(i);
+            });
+
+        var labels = svg.selectAll(".bar-label").data(dataset);
+
+        labels.exit()
+            .transition()
+            .duration(500)
+            .attr("x", function(d, i) {
+                return w;
+            })
+            .remove();
+
+        labels.transition()
+            .duration(500)
+            .attr("x", function(d, i) {
+                return xScale(i) + 7;
             });
     });

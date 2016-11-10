@@ -7,9 +7,9 @@ var data_max = 500;
 
 var padding = 30;
 
-var transition_dur = 500;
+var transition_dur = 1000;
 var transition_delay = function (d, i) {
-    return i*(transition_dur/50)
+    return i*(transition_dur/100)
 };
 var ease_type = "elastic";
 
@@ -40,7 +40,18 @@ var rScale = d3.scale.linear()
     .domain([0, DATA_LEN])
     .rangeRound([3, 6]);
 
-svg.selectAll("circle")
+svg.append("clipPath")
+    .attr("id", "chart-area")
+    .append("rect")
+    .attr("x", padding)
+    .attr("y", padding)
+    .attr("width", w - padding*2)
+    .attr("height", h - padding * 2);
+
+svg.append("g")
+    .attr("id", "circles")
+    .attr("clip-path", "url(#chart-area)")
+    .selectAll("circle")
     .data(dataset)
     .enter()
     .append("circle")
@@ -97,5 +108,17 @@ d3.select("p")
             .attr("cx", function(d) {
                 return xScale(d.x);
             });
+
+        //Update x-axis
+        svg.select(".x.axis")
+            .transition()
+            .duration(1000)
+            .call(xAxis);
+
+        //Update y-axis
+        svg.select(".y.axis")
+            .transition()
+            .duration(1000)
+            .call(yAxis);
     });
 

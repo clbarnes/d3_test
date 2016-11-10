@@ -3,19 +3,19 @@ DIR=$(git rev-parse --show-toplevel)
 # echo "Running post-commit"
 if [ -e "$DIR/.commit" ]
     then
-        # echo "Found .commit, adding snapshot"
-        $DIR/snapshot/take_snapshot.py
-        # echo "taken snapshot"
+    # echo "Found .commit, adding snapshot"
+    $DIR/snapshot/take_snapshot.py
+    # echo "taken snapshot"
 
-        if [[ $(git status --porcelain) == *"snapshot.png"* ]]
-        then
-            # echo "Committing new snapshot"
-            git add $DIR/snapshot/
-            rm $DIR/.commit
-            git commit --amend --no-verify -C HEAD
-        else
-            # echo "Snapshot already up to date"
-            rm $DIR/.commit
-        fi
+    if [[ $(git status --porcelain) == *"snapshot.png"* ]]
+    then
+        # echo "Committing new snapshot"
+        git add $DIR/snapshot/
+        rm $DIR/.commit
+        git commit --amend --no-verify -C HEAD
+    else
+        # echo "Snapshot already up to date"
+        rm $DIR/.commit
+    fi
 fi
 exit

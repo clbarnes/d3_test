@@ -91,6 +91,10 @@ var addBars = function(barsWithBoundData) {
         })
         .on("click", function() {
             sortBars();
+        })
+        .append("title")
+        .text(function(d) {
+            return d;
         });
 };
 

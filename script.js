@@ -94,17 +94,18 @@ var addBars = function(barsWithBoundData) {
         })
         .on("mouseover", function(d) {
             var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
-            var yPosition = parseFloat(d3.select(this).attr("y")) + 14;
+            var yPosition = parseFloat(d3.select(this).attr("y")) /2 + h/2;
 
-            svg.append("text")
-                .attr("id", "tooltip")
-                .attr("x", xPosition)
-                .attr("y", yPosition)
-                .attr("class", "bar-tooltip")
+            d3.select('#tooltip')
+                .style("left", xPosition + "px")
+                .style("top", yPosition + "px")
+                .select("#value")
                 .text(Math.round(d));
+
+            d3.select("#tooltip").classed("hidden", false);
         })
         .on("mouseout", function() {
-            d3.select('#tooltip').remove()
+            d3.select('#tooltip').classed("hidden", true);
         });
 };
 

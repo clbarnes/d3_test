@@ -23,11 +23,48 @@ var dataset = mk_data(DATA_LEN);
 var data2stacks = function(data) {
     var out = [[], [], []];
     data.forEach(function(element, index) {
-        out[0].push({ind: index, val: element.apples});
-        out[1].push({ind: index, val: element.oranges});
-        out[2].push({ind: index, val: element.grapes});
+        out[0].push({x: index, y: element.apples});
+        out[1].push({x: index, y: element.oranges});
+        out[2].push({x: index, y: element.grapes});
     });
     return out;
 };
 
-var stacks = data2stacks(dataset);
+var stackData = data2stacks(dataset);
+
+var stack = d3.layout.stack();
+
+stack(stackData);
+
+var xScale = d3.scale.ordinal()
+    .domain(d3.range(DATA_LEN))
+    .rangeRoundBands([0, w], 0.05);
+
+var yScale = d3.scale.linear()
+    .domain([0, DATA_MAX*3])
+    .rangeRound([0, h]);
+
+var colors = d3.scale.category10();
+
+var groups = svg.selectAll("g")
+    .data(stackData)
+    .enter()
+    .append("g")
+    .style("fill", function(d, i) {
+        return colors(i);
+    });
+
+var rects = groups.selectAll("rect")
+    .data(function(d) { return d; })
+    .enter()
+    .append("rect")
+    .attr("x", function (d, i) {
+        return xScale(i);
+    })
+    .attr("y", function(d) {
+        return yScale(d.y0);
+    })
+    .attr("height", function(d) {
+        return yScale(d.y)
+    })
+    .attr("width", xScale.rangeBand());

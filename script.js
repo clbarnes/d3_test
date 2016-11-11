@@ -92,9 +92,19 @@ var addBars = function(barsWithBoundData) {
         .on("click", function() {
             sortBars();
         })
-        .append("title")
-        .text(function(d) {
-            return d;
+        .on("mouseover", function(d) {
+            var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
+            var yPosition = parseFloat(d3.select(this).attr("y")) + 14;
+
+            svg.append("text")
+                .attr("id", "tooltip")
+                .attr("x", xPosition)
+                .attr("y", yPosition)
+                .attr("class", "bar-tooltip")
+                .text(Math.round(d));
+        })
+        .on("mouseout", function() {
+            d3.select('#tooltip').remove()
         });
 };
 

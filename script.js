@@ -35,23 +35,68 @@ var hScale = d3.scale.linear()
     .domain([0, Math.round(d3.max(dataset) * 1.2)])
     .rangeRound([0, h]);
 
-svg.selectAll("rect")
-    .data(dataset)
-    .enter()
-    .append("rect")
-    .attr("x", function(d, i) {
-        return xScale(i)
-    })
-    .attr("width", xScale.rangeBand())
-    .attr("y", function(d) {
-        return yScale(d)
-    })
-    .attr("height", function(d) {
-        return hScale(d)
-    })
-    .attr("fill", function (d){
-        return "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")";
-    });
+var sortBars = function() {
+    svg.selectAll("rect")
+        .sort(function(a, b) {
+            return a-b;
+        })
+        .transition()
+        .duration(transition_dur)
+        .attr("x", function(d, i) {
+            return xScale(i);
+        });
+
+    svg.selectAll(".bar-label")
+        .sort(function(a, b) {
+            return a-b;
+        })
+        .transition()
+        .duration(transition_dur)
+        .attr("x", function(d, i) {
+            return xScale(i) + 7;
+        });
+};
+
+/*
+ * takes result of svg.selectAll("rect").data(dataset)
+ */
+var addBars = function(barsWithBoundData) {
+    barsWithBoundData.enter()
+        .append("rect")
+        .attr("x", function(d, i) {
+            return xScale(i)
+        })
+        .attr("width", xScale.rangeBand())
+        .attr("y", function(d) {
+            return yScale(d)
+        })
+        .attr("height", function(d) {
+            return hScale(d)
+        })
+        .attr("fill", function (d){
+            return "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")";
+        })
+        .on("click", function() {
+            sortBars();
+        })
+        .on("mouseover", function() {
+            d3.select(this)
+                .transition()
+                .duration(transition_dur)
+                .ease("linear")
+                .attr("fill", "orange")
+        })
+        .on("mouseout", function(d) {
+            d3.select(this)
+                .transition()
+                .duration(transition_dur)
+                .ease("linear")
+                .attr("fill", "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")");
+        });
+};
+
+addBars(svg.selectAll("rect")
+    .data(dataset));
 
 svg.selectAll("text")
     .data(dataset)
@@ -122,19 +167,24 @@ d3.select("#adddata-text")
 
         var bars = svg.selectAll("rect").data(dataset);
 
-        bars.enter()
-            .append("rect")
-            .attr("x", w)
-            .attr("y", function(d) {
-                return yScale(d)
-            })
-            .attr("width", xScale.rangeBand())
-            .attr("height", function(d) {
-                return hScale(d)
-            })
-            .attr("fill", function (d){
-                return "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")";
-            });
+        addBars(bars);
+
+        // bars.enter()
+        //     .append("rect")
+        //     .attr("x", w)
+        //     .attr("y", function(d) {
+        //         return yScale(d)
+        //     })
+        //     .attr("width", xScale.rangeBand())
+        //     .attr("height", function(d) {
+        //         return hScale(d)
+        //     })
+        //     .attr("fill", function (d){
+        //         return "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")";
+        //     })
+        //     .on("click", function(d) {
+        //         console.log(d);
+        //     });
 
         var labels = svg.selectAll(".bar-label").data(dataset);
 

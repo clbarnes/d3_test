@@ -10,6 +10,7 @@ var transition_delay = function (d, i) {
 };
 var ease_type = "cubic-in-out";
 
+var sortOrder = false;
 
 var mk_data = function(l) {
     var out = [];
@@ -35,22 +36,33 @@ var hScale = d3.scale.linear()
     .domain([0, Math.round(d3.max(dataset) * 1.2)])
     .rangeRound([0, h]);
 
+var sortFn = function(a, b) {
+    if (sortOrder) {
+        return d3.ascending(a, b);
+    } else {
+        return d3.descending(a, b);
+    }
+};
+
 var sortBars = function() {
+    sortOrder = !sortOrder;
     svg.selectAll("rect")
-        .sort(function(a, b) {
-            return a-b;
-        })
+        .sort(sortFn)
         .transition()
+        .delay(function(d, i) {
+            return i*20
+        })
         .duration(transition_dur)
         .attr("x", function(d, i) {
             return xScale(i);
         });
 
     svg.selectAll(".bar-label")
-        .sort(function(a, b) {
-            return a-b;
-        })
+        .sort(sortFn)
         .transition()
+        .delay(function(d, i) {
+            return i*20
+        })
         .duration(transition_dur)
         .attr("x", function(d, i) {
             return xScale(i) + 7;
@@ -61,6 +73,7 @@ var sortBars = function() {
  * takes result of svg.selectAll("rect").data(dataset)
  */
 var addBars = function(barsWithBoundData) {
+    sortOrder = false;
     barsWithBoundData.enter()
         .append("rect")
         .attr("x", function(d, i) {
@@ -78,20 +91,6 @@ var addBars = function(barsWithBoundData) {
         })
         .on("click", function() {
             sortBars();
-        })
-        .on("mouseover", function() {
-            d3.select(this)
-                .transition()
-                .duration(transition_dur)
-                .ease("linear")
-                .attr("fill", "orange")
-        })
-        .on("mouseout", function(d) {
-            d3.select(this)
-                .transition()
-                .duration(transition_dur)
-                .ease("linear")
-                .attr("fill", "rgb(0, 0, " + Math.round((d / d3.max(dataset)) * 255) + ")");
         });
 };
 
@@ -117,6 +116,7 @@ svg.selectAll("text")
 d3.select("#regenerate-text")
     .on("click", function() {
         dataset = mk_data(dataset.length);
+        sortOrder = false;
 
         yScale.domain([0, Math.round(d3.max(dataset) * 1.2)]);
         hScale.domain([0, Math.round(d3.max(dataset) * 1.2)]);

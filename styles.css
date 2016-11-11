@@ -5,13 +5,13 @@
     pointer-events: none;
 }
 
-/*rect {*/
-    /*-moz-transition: all 0.15s;*/
-    /*-o-transition: all 0.15s;*/
-    /*-webkit-transition: all 0.15s;*/
-    /*transition: all 0.15s;*/
-/*}*/
+rect {
+    -moz-transition: all 0.15s;
+    -o-transition: all 0.15s;
+    -webkit-transition: all 0.15s;
+    transition: all 0.15s;
+}
 
-/*rect:hover {*/
-    /*fill: orange;*/
-/*}*/
+rect:hover {
+    fill: orange;
+}
